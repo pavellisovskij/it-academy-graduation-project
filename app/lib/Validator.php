@@ -82,6 +82,19 @@ class Validator
         ];
     }
 
+    public static function methods(array $methods) {
+        $errors = [];
+        foreach ($methods as $method => $param) {
+            $result = self::$method($param);
+
+            if ($result === true) continue;
+            else $errors[] = $result;
+        }
+
+        if (empty($errors)) return true;
+        else return $errors;
+    }
+
 //    public static function regular_expression(string $pattern, string $subject) {
 //        return preg_match('#^' . $pattern . '$#', $subject)
 //    }

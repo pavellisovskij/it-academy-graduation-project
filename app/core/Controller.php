@@ -3,7 +3,6 @@
 namespace app\core;
 
 use app\core\View;
-use app\lib\Flash;
 
 abstract class Controller
 {

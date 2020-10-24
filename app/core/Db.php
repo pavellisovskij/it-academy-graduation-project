@@ -19,10 +19,9 @@ class Db
                 $_ENV['DB_PASSWORD']
             );
 
-            if ($_ENV['APP_DEBUG'] === true) $this->db->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
-            else $this->db->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
-
+            $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
             $this->db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+            //отловить ошибки
         } catch (\PDOException $e) {
             View::error_page_with_message($e->getMessage());
         }

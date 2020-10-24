@@ -1,3 +1,7 @@
+<div class="btn-group mb-3" role="group" aria-label="Кнопки управления">
+    <a href="/department/create" class="btn btn-primary">Добавить</a>
+</div>
+
 <?php if (empty($departments)) : ?>
     <div class="alert alert-primary" role="alert">
         Добавьте отделы.
@@ -18,9 +22,12 @@
                     <tr>
                         <td><?= $department['name'] ?></td>
                         <td><?= $department['short_name'] ?></td>
-                        <td></td>
+                        <td><?= $department['num'] ?></td>
                         <td>
-                            <a href="/department/<?= $department['id'] ?>" class="btn btn-primary">Просмотр</a>
+                            <div class="btn-group" role="group" aria-label="Кнопки управления">
+                                <a href="/department/<?= $department['id'] ?>" class="btn btn-primary">Просмотр</a>
+                                <a href="/department/<?= $department['id'] ?>/delete" class="btn btn-danger">Удалить</a>
+                            </div>
                         </td>
                     </tr>
                 <?php endforeach; ?>

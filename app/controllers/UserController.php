@@ -3,6 +3,8 @@
 namespace app\controllers;
 
 use app\core\Controller;
+use app\core\View;
+use app\lib\Flash;
 use app\models\User;
 
 class UserController extends Controller
@@ -21,9 +23,30 @@ class UserController extends Controller
     }
 
     public function login() {
-        if (!empty($_POST) && isset($_POST['username'])) {
+        if (isset($_POST['username']) && isset($_POST['password'])) {
             $user = new User();
-            $user->verify($_POST['username'], $_POST['password']);
+            $user = $user->select(['*'])->where('username', '=', $_POST['username'])->first()->get();
+
+            if (password_verify($_POST['password'], $user['password_hash']) === true) {
+                $_SESSION['username'] = $_POST['username'];
+                $this->view->redirect('/workplaces');
+            }
+            else {
+                Flash::set('auth_fail', 'Введены неверные учетные данные.');
+                $this->view->redirect('/signin');
+            }
         }
+        else {
+            Flash::set('auth_fail', 'Введены неверные учетные данные.');
+            $this->view->redirect('/signin');
+        }
+    }
+
+    public function logout() {
+        if (User::isAdmin()) {
+            unset($_SESSION['username']);
+            $this->view->redirect('/workplaces');
+        }
+        else View::errorCode(403);
     }
 }

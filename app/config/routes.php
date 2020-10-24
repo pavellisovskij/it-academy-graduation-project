@@ -2,9 +2,14 @@
 
 return [
     '' => [
-        'controller' => 'task',
+        'controller' => 'workplaces',
         'action'     => 'index'
     ],
+    '/' => [
+        'controller' => 'workplaces',
+        'action'     => 'index'
+    ],
+    /*user*/
     'signin' => [
         'controller' => 'user',
         'action'     => 'signin'
@@ -13,6 +18,68 @@ return [
         'controller' => 'user',
         'action'     => 'login'
     ],
+    'logout' => [
+        'controller' => 'user',
+        'action'     => 'logout'
+    ],
+    /*user*/
+    /*position*/
+    'positions' => [
+        'controller' => 'position',
+        'action'     => 'index'
+    ],
+    'positions/page/{int_page}' => [
+        'controller' => 'position',
+        'action'     => 'index'
+    ],
+    'position/create' => [
+        'controller' => 'position',
+        'action'     => 'create'
+    ],
+    'position/store' => [
+        'controller' => 'position',
+        'action'     => 'store'
+    ],
+    'position/{int_id}/delete' => [
+        'controller' => 'position',
+        'action'     => 'delete'
+    ],
+    /*position*/
+    /*workplace*/
+    'workplaces' => [
+        'controller' => 'workplace',
+        'action'     => 'index'
+    ],
+    'workplaces/page/{int_page}' => [
+        'controller' => 'workplace',
+        'action'     => 'index'
+    ],
+    'workplace/create' => [
+        'controller' => 'workplace',
+        'action'     => 'create'
+    ],
+    'workplace/store' => [
+        'controller' => 'workplace',
+        'action'     => 'store'
+    ],
+    'workplace/{int_id}' => [
+        'controller' => 'workplace',
+        'action'     => 'show'
+    ],
+    'workplace/{int_id}/edit' => [
+        'controller' => 'workplace',
+        'action'     => 'edit'
+    ],
+    'workplace/{int_id}/update' => [
+        'controller' => 'workplace',
+        'action'     => 'update'
+    ],
+    'workplace/{int_id}/delete' => [
+        'controller' => 'workplace',
+        'action'     => 'delete'
+    ],
+    /*workplace*/
+    /*department*/
     'departments' => [
         'controller' => 'department',
         'action'     => 'index'
@@ -45,6 +112,12 @@ return [
         'controller' => 'department',
         'action'     => 'delete'
     ],
+    'departments/all' => [
+        'controller' => 'department',
+        'action'     => 'all'
+    ],
+    /*department*/
+    /*employee*/
     'employees' => [
         'controller' => 'employee',
         'action'     => 'index'
@@ -77,9 +150,5 @@ return [
         'controller' => 'employee',
         'action'     => 'delete'
     ]
-
-//    'task/{id1}/edit/{id2}' => [
-//        'controller' => 'task',
-//        'action'     => 'edit'
-//    ],
+    /*employee*/
 ];

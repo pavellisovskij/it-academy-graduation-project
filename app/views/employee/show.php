@@ -1,35 +1,60 @@
-<div class="container-fluid">
-    <div class="btn-group" role="group" aria-label="Кнопки управления">
-        <a href="/department/<?= $department['id'] ?>/edit" class="btn btn-primary">Редактировать</a>
-        <a href="/department/<?= $department['id'] ?>/delete" class="btn btn-danger">Удалить</a>
+<div class="btn-group mb-3" role="group" aria-label="Кнопки управления">
+    <a href="/employee/<?= $employee['id'] ?>/edit" class="btn btn-primary">Редактировать</a>
+    <a href="/employee/<?= $employee['id'] ?>/delete" class="btn btn-danger">Удалить</a>
+</div>
+
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">Личные данные</div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-sm">
+                        <tbody>
+                            <tr>
+                                <td>День рождения</td>
+                                <td><?= $employee['birthday'] ?></td>
+                            </tr>
+                            <tr>
+                                <td>Нанят</td>
+                                <td><?= $employee['hired'] ?></td>
+                            </tr>
+                            <tr>
+                                <td>Медицинская комиссия</td>
+                                <td><?= $employee['medical_exam'] ?></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 
-<!--    --><?php //if (empty($departments)) : ?>
-<!--        <div class="alert alert-primary" role="alert">-->
-<!--            Добавьте отделы.-->
-<!--        </div>-->
-<!--    --><?php //else : ?>
-<!--        <div class="table-responsive">-->
-<!--            <table class="table table-striped table-sm">-->
-<!--                <thead>-->
-<!--                <tr>-->
-<!--                    <th>Название отдела</th>-->
-<!--                    <th>Короткое название</th>-->
-<!--                    <th>Рабочих мест</th>-->
-<!--                </tr>-->
-<!--                </thead>-->
-<!--                <tbody>-->
-<!--                --><?php //foreach ($departments as $department) : ?>
-<!--                    <tr>-->
-<!--                        <td>--><?//= $department['name'] ?><!--</td>-->
-<!--                        <td>--><?//= $department['short_name'] ?><!--</td>-->
-<!--                        <td></td>-->
-<!--                    </tr>-->
-<!--                --><?php //endforeach; ?>
-<!--                </tbody>-->
-<!--            </table>-->
-<!--        </div>-->
-<!---->
-<!--        --><?php //$paginator->render() ?>
-<!--    --><?php //endif; ?>
+    <div class="col">
+        <div class="card">
+            <div class="card-header">Рабочее место</div>
+            <?php foreach ($workplaces as $workplace) : ?>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-sm">
+                            <tbody>
+                            <tr>
+                                <td>Отдел</td>
+                                <td><?= $workplace['department'] ?></td>
+                            </tr>
+                            <tr>
+                                <td>Должность/профессия</td>
+                                <td><?= $workplace['pos'] ?></td>
+                            </tr>
+                            <tr>
+                                <td>Ставка</td>
+                                <td><?= $workplace['rate'] ?></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
 </div>

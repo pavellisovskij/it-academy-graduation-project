@@ -62,53 +62,8 @@ class Router
         }
     }
 
-    private function match2()
-    {
-        $url = explode('/', trim($_SERVER['REQUEST_URI'], '/'));
-        $numberOfUrlParts = count($url);
-        $found            = false;
-//        var_dump($this->routes);
-//        var_dump($url);
-        foreach ($this->routes as $route => $params) {
-            $route       = explode('/', trim($route, '/'));
-            $extraParams = [];
-//            var_dump($route);
-//            var_dump($params);
-
-            if (count($route) === $numberOfUrlParts) {
-                $conformity = null;
-                
-                for ($i = 0; $i < $numberOfUrlParts; $i++) {
-//                    var_dump(preg_match('#^' . $route[$i] . '$#', $url[$i]));
-//                    var_dump($this->isParam($route[$i]));
-                    if (preg_match('#^' . $route[$i] . '$#', $url[$i]) === 1)
-                        $conformity = true;
-                    elseif ($this->isParam($route[$i]) === true) {
-                        $extraParams[]  = $url[$i];
-                        $conformity     = true;
-                    }
-                    else $conformity = false;
-                    //var_dump($conformity);
-                }
-
-//                var_dump(implode('/', $url), $route, $conformity);
-                if ($conformity === true) {
-                    $this->params       = $params;
-                    $this->extraParams  = $extraParams;
-                    $found = true;
-                }
-            }
-            else continue;
-            break;
-        }
-
-        if ($found === true) return true;
-        else return false;
-    }
-
     private function match3()
     {
-        //$url = explode('/', 'department/1');
         $url = explode('/', trim($_SERVER['REQUEST_URI'], '/'));
         $numberOfUrlParts = count($url);
         $found = false;

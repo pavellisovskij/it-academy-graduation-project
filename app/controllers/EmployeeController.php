@@ -3,30 +3,32 @@
 namespace app\controllers;
 
 use app\core\Controller;
+use app\core\View;
 use app\lib\Paginator;
+use app\models\Department;
 use app\models\Employee;
+use app\models\Workplace;
 
 class EmployeeController extends Controller
 {
-    public function index(int $page = 1) {
+    public function index($page = 1) {
         $employee          = new Employee();
         $numberOfEmployees = (int) $employee->count();
         $employeePerPage   = 20;
-        $pages               = (int) ceil($numberOfEmployees / $employeePerPage);
+        $pages             = (int) ceil($numberOfEmployees / $employeePerPage);
 
         if ($page === 1) $offset = 0;
         else $offset = $page * $employeePerPage;
 
-//        $employees = $employee->all()->take(
-//            $employeePerPage, $offset
-//        )->get();
-        $employees = $employee->query("
-            SELECT employees.id, employees.firstname, employees.surname, employees.patronymic, departments.short_name
-            FROM employees
-              INNER JOIN workplaces
-              ON employees.id = workplaces.employee_id INNER JOIN departments ON workplaces.department_id = departments.id
-        ");
-        debug($employees);
+        $employees = $employee->all()->take(
+            $employeePerPage, $offset
+        )->get();
+//        $employees = $employee->query("
+//            SELECT employees.id, employees.firstname, employees.surname, employees.patronymic, departments.short_name
+//            FROM employees
+//              INNER JOIN workplaces
+//              ON employees.id = workplaces.employee_id INNER JOIN departments ON workplaces.department_id = departments.id
+//        ");
 
 //        foreach ($employees as $employee) {
 //
@@ -41,27 +43,73 @@ class EmployeeController extends Controller
     }
 
     public function create() {
-        $this->view->render('Новый сотрудник');
+//        $department = new Department();
+//        $departments = $department->select(['id', 'short_name'])->get();
+
+        $workplaces = new Workplace();
+        $workplaces = $workplaces->query("
+            SELECT 
+                workplaces.id,  
+                departments.short_name AS department, 
+                positions.name AS pos
+            FROM workplaces
+            INNER JOIN departments 
+                ON workplaces.department_id = departments.id
+            INNER JOIN positions
+                ON positions.id = workplaces.position_id 
+            WHERE workplaces.employee_id IS NULL
+        ", Workplace::FETCH_ALL_METHOD);
+
+        $this->view->render('Новый сотрудник', ['workplaces' => $workplaces]);
     }
 
-//    public function store() {
-//        if (!empty($_POST) && isset($_POST['name'])) {
-//            $department = new Department();
-//            $department = $department->insert([
-//                'name'       => $_POST['name'],
-//                'short_name' => $_POST['short_name']
-//            ]);
-//        }
-//        $this->view->redirect('/departments');
-//    }
-//
-//    public function show($id) {
-//        $department = new Department();
-//        $department = $department->find($id)->get();
-//
-//
-//        $this->view->render($department['name'], ['department' => $department]);
-//    }
+    public function store() {
+        if (!empty($_POST) && isset($_POST['surname'])) {
+            $employee = new Employee();
+            $employee = $employee->insert([
+                'surname'      => $_POST['surname'],
+                'firstname'    => $_POST['firstname'],
+                'patronymic'   => $_POST['patronymic'],
+                'birthday'     => $_POST['birthday'],
+                'hired'        => $_POST['hired'],
+                'medical_exam' => $_POST['medical_exam']
+            ]);
+
+            $workplace = new Workplace();
+            $workplace = $workplace->update([
+                'employee_id' => $employee
+            ], [$_POST['workplace']]);
+
+            if ($workplace > 0) $this->view->redirect("/employee/$employee");
+        }
+    }
+
+    public function show($id) {
+        $employee = new Employee();
+        $employee = $employee->find($id)->get();
+
+        if (!empty($employee)) {
+            $workplace = new Workplace();
+            $workplaces = $workplace->query("
+            SELECT 
+                workplaces.rate,  
+                departments.short_name AS department, 
+                positions.name AS pos
+            FROM workplaces
+            INNER JOIN departments 
+                ON workplaces.department_id = departments.id
+            INNER JOIN positions
+                ON positions.id = workplaces.position_id 
+            WHERE workplaces.employee_id = $id
+        ", Workplace::FETCH_ALL_METHOD);
+
+            $this->view->render($employee['surname'] . ' ' . $employee['firstname'] . ' ' . $employee['patronymic'], [
+                'workplaces' => $workplaces,
+                'employee'   => $employee
+            ]);
+        }
+        else View::errorCode(404);
+    }
 //
 //    public function edit($id) {
 //        $department = new Department();

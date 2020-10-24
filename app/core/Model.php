@@ -33,7 +33,7 @@ class Model //implements ModelInterface
             $this->sql = "INSERT INTO $this->table_name (" . $preparedArray['columns'] . ") VALUES (" . $preparedArray['values'] . ")";
             $stmt = $this->db->prepare($this->sql);
 
-            if ($stmt->execute($this->preparedData) === false) throw new \PDOException($stmt->errorInfo());
+            if ($stmt->execute($this->preparedData) === false) throw new \PDOException($stmt->errorInfo()[2]);
         } catch (\PDOException $e) {
             View::error_page_with_message($e->getMessage());
         }
@@ -89,9 +89,10 @@ class Model //implements ModelInterface
 //        return (new static)->$method(...$parameters);
 //    }
 
-    public function query(string $sql, array $data = null)
+    public function query(string $sql, string $fetch_method, array $data = null)
     {
         $this->sql = $sql;
+        $this->get_method = $fetch_method;
         if ($data !== null) $this->preparedData = $data;
 
         return $this->get();
@@ -114,16 +115,8 @@ class Model //implements ModelInterface
 
     public function select(array $columns)
     {
-        $this->sql = 'SELECT ';
-        $number_of_columns = count($columns);
-
-        for ($i = 0; $i < $number_of_columns; $i++) {
-            $this->sql .= $columns[$i];
-
-            if ($i !== $number_of_columns - 1) $this->sql .= ', ';
-        }
-
-        $this->sql .= " FROM $this->table_name";
+        $columns = implode(', ', $columns);
+        $this->sql = "SELECT $columns FROM $this->table_name";
 
         return $this;
     }
@@ -155,19 +148,25 @@ class Model //implements ModelInterface
 
     public function orderBy(array $columns)
     {
-        foreach ($columns as $column) {
-            try {
-                $sort = strtoupper($column[1]);
+        $this->sql .= " ORDER BY ";
+        $orderBy = [];
 
+        foreach ($columns as $column) {
+            $column[1] = strtoupper($column[1]);
+
+            try {
                 if (
                     $this->issetSql() &&
-                    in_array($sort, ['ASC', 'DESC']) === true
-                ) $this->sql .= " ORDER BY $column[0] $sort";
+                    in_array($column[1], ['ASC', 'DESC']) === true
+                ) $orderBy[] = implode(' ', $column);
                 else throw new \Exception('Ошибочный оператор сортировки');
             } catch (\Exception $e) {
                 View::error_page_with_message($e->getMessage());
             }
         }
+
+        $orderBy   = implode(', ', $orderBy);
+        $this->sql .= $orderBy;
 
         return $this;
     }
@@ -208,15 +207,18 @@ class Model //implements ModelInterface
     public function get()
     {
         if ($this->issetSql()) {
+            $this->stmt = $this->db->prepare($this->sql);
+
+            if (!empty($this->preparedData)) $result = $this->stmt->execute($this->preparedData);
+            else $result = $this->stmt->execute();
+
             try {
-                $this->stmt = $this->db->prepare($this->sql);
+                if ($result === true) {
+                    $method = $this->get_method;
 
-                if (!empty($this->preparedData)) $this->stmt->execute($this->preparedData);
-                else $this->stmt->execute();
-
-                $method = $this->get_method;
-
-                return $this->stmt->$method();
+                    return $this->stmt->$method();
+                }
+                else throw new \PDOException($this->stmt->errorInfo());
             } catch (\PDOException $e) {
                 View::error_page_with_message($e->getMessage());
             }

@@ -20,9 +20,15 @@
             <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Штатное расписание</a>
 
             <ul class="navbar-nav px-3">
-                <li class="nav-item text-nowrap">
-                    <a class="nav-link" href="#">Sign out</a>
-                </li>
+                <?php if (\app\models\User::isAdmin()) : ?>
+                    <li class="nav-item text-nowrap">
+                        <a class="nav-link" href="/logout">Выйти</a>
+                    </li>
+                <?php else : ?>
+                    <li class="nav-item text-nowrap">
+                        <a class="nav-link" href="/signin">Войти</a>
+                    </li>
+                <?php endif; ?>
             </ul>
         </nav>
 
@@ -32,39 +38,27 @@
                     <div class="sidebar-sticky">
                         <ul class="nav flex-column">
                             <li class="nav-item">
-                                <a class="nav-link active" href="#">
-                                    <span data-feather="home"></span>
-                                    Dashboard <span class="sr-only">(current)</span>
+                                <a class="nav-link" href="/positions">
+                                    <span data-feather="trello"></span>
+                                    Должности
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                    <span data-feather="file"></span>
-                                    Orders
+                                <a class="nav-link" href="/workplaces">
+                                    <span data-feather="file-text"></span>
+                                    Рабочие места
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                    <span data-feather="shopping-cart"></span>
-                                    Products
+                                <a class="nav-link" href="/departments">
+                                    <span data-feather="grid"></span>
+                                    Отделы
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">
+                                <a class="nav-link" href="/employees">
                                     <span data-feather="users"></span>
-                                    Customers
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                    <span data-feather="bar-chart-2"></span>
-                                    Reports
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                    <span data-feather="layers"></span>
-                                    Integrations
+                                    Сотрудники
                                 </a>
                             </li>
                         </ul>
@@ -80,7 +74,6 @@
                 </main>
             </div>
         </div>
-
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
@@ -98,6 +91,5 @@
         <script>
             feather.replace()
         </script>
-
     </body>
 </html>
