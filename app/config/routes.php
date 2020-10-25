@@ -2,11 +2,11 @@
 
 return [
     '' => [
-        'controller' => 'workplaces',
+        'controller' => 'workplace',
         'action'     => 'index'
     ],
     '/' => [
-        'controller' => 'workplaces',
+        'controller' => 'workplace',
         'action'     => 'index'
     ],
     /*user*/
@@ -21,6 +21,10 @@ return [
     'logout' => [
         'controller' => 'user',
         'action'     => 'logout'
+    ],
+    'set' => [
+        'controller' => 'user',
+        'action'     => 'index'
     ],
     /*user*/
     /*position*/

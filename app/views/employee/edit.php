@@ -1,18 +1,36 @@
 <div class="container-fluid">
-    <form action="/department/<?= $department['id'] ?>/update" method="post">
-        <div class="form-group">
-            <label for="name" class="form-label">Полное название отдела</label>
-            <input type="text" name="name" class="form-control" id="name" required max="100" min="4" value="<?= $department['name'] ?>">
+    <?if (\app\lib\Flash::is_set('error')): ?>
+        <div class="alert alert-danger" role="alert">
+            <?= \app\lib\Flash::get('error'); ?>
+        </div>
+    <?php endif; ?>
+
+    <form action="/employee/<?= $employee['id'] ?>/update" method="post">
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <label for="fired" class="form-label">Уволен</label>
+                    <input type="date" name="fired" class="form-control" id="fired">
+                </div>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label for="short_name" class="form-label">Короткое название отдела</label>
-            <input type="text" name="short_name" class="form-control" id="short_name" required max="10" min="2" value="<?= $department['short_name'] ?>">
+        <?php if ($workplace != false) : ?>
+            <p>Текущее рабочее место: <?= $workplace['short_name'] ?>: <?php $workplace['pos'] ?></p>
+        <?php endif;?>
+
+        <div class="form-group" id="select-department">
+            <label for="workplace">Рабочее место</label>
+            <select class="form-control" id="workplace" name="workplace">
+                <?php foreach ($empty_workplaces as $workplace) : ?>
+                    <option value="<?= $workplace['id'] ?>"> <?= $workplace['department'] . ': ' . $workplace['pos'] ?></option>
+                <?php endforeach; ?>
+            </select>
         </div>
 
         <div class="row">
             <div class="col-md-2">
-                <button class="btn btn-lg btn-primary btn-block" type="submit">Обновить</button>
+                <button class="btn btn-primary btn-block" type="submit">Обновить</button>
             </div>
         </div>
     </form>

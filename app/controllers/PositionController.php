@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\core\Controller;
 use app\lib\Paginator;
 use app\models\Position;
+use app\models\User;
 
 class PositionController extends Controller
 {
@@ -31,24 +32,32 @@ class PositionController extends Controller
     }
 
     public function create() {
-        $this->view->render('Новая должность');
+        if (User::isAdmin()) $this->view->render('Новая должность');
+        else $this->view->redirect('/signin');
     }
 
-    public function store() {
-        if (!empty($_POST) && isset($_POST['name'])) {
-            $position = new Position();
-            $position = $position->insert([
-                'name'          => $_POST['name'],
-                'position_code' => $_POST['position_code']
-            ]);
+    public function store()
+    {
+        if (User::isAdmin()) {
+            if (!empty($_POST) && isset($_POST['name'])) {
+                $position = new Position();
+                $position = $position->insert([
+                    'name' => $_POST['name'],
+                    'position_code' => $_POST['position_code']
+                ]);
+            }
+            $this->view->redirect('/positions');
         }
-        $this->view->redirect('/positions');
+        else $this->view->redirect('/signin');
     }
 
     public function delete($id) {
-        $position = new Position();
-        $result = $position->delete([$id]);
+        if (User::isAdmin()) {
+            $position = new Position();
+            $result = $position->delete([$id]);
 
-        $this->view->redirect('/positions');
+            $this->view->redirect('/positions');
+        }
+        else $this->view->redirect('/signin');
     }
 }

@@ -1,8 +1,8 @@
-<div class="container-fluid mb-3">
-    <div class="btn-group" role="group" aria-label="Кнопки управления">
+<?php if (\app\models\User::isAdmin()): ?>
+    <div class="btn-group mb-3" role="group" aria-label="Кнопки управления">
         <a href="/position/create" class="btn btn-primary">Добавить</a>
     </div>
-</div>
+<?php endif; ?>
 
 <?php if (empty($positions)) : ?>
     <div class="alert alert-primary" role="alert">

@@ -1,7 +1,9 @@
-<div class="btn-group mb-3" role="group" aria-label="Кнопки управления">
-    <a href="/employee/<?= $employee['id'] ?>/edit" class="btn btn-primary">Редактировать</a>
-    <a href="/employee/<?= $employee['id'] ?>/delete" class="btn btn-danger">Удалить</a>
-</div>
+<?php if (\app\models\User::isAdmin()) : ?>
+    <div class="btn-group mb-3" role="group" aria-label="Кнопки управления">
+        <a href="/employee/<?= $employee['id'] ?>/edit" class="btn btn-primary">Редактировать</a>
+        <a href="/employee/<?= $employee['id'] ?>/delete" class="btn btn-danger">Удалить</a>
+    </div>
+<?php endif; ?>
 
 <div class="row">
     <div class="col">

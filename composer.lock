@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "36de398affe003482a9e6a957467fa79",
+    "content-hash": "75a8affed1442686e83f7acd9312a0ec",
     "packages": [
         {
             "name": "graham-campbell/result-type",
@@ -112,6 +112,52 @@
                 "type"
             ],
             "time": "2020-07-20T17:29:33+00:00"
+        },
+        {
+            "name": "siriusphp/validation",
+            "version": "3.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/siriusphp/validation.git",
+                "reference": "6e16e6b4636abe580aee9d6529a721ee830c9e61"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/siriusphp/validation/zipball/6e16e6b4636abe580aee9d6529a721ee830c9e61",
+                "reference": "6e16e6b4636abe580aee9d6529a721ee830c9e61",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^8.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Sirius\\Validation\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Adrian Miu",
+                    "email": "adrian@adrianmiu.ro"
+                }
+            ],
+            "description": "Data validation library. Validate arrays, array objects, domain models etc using a simple API. Easily add your own validators on top of the already dozens built-in validation rules",
+            "keywords": [
+                "form",
+                "modeling",
+                "sanitization",
+                "security",
+                "validation"
+            ],
+            "time": "2020-06-08T06:23:44+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -378,5 +424,6 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "1.1.0"
 }

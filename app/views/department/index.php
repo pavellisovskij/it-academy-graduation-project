@@ -1,6 +1,8 @@
-<div class="btn-group mb-3" role="group" aria-label="Кнопки управления">
-    <a href="/department/create" class="btn btn-primary">Добавить</a>
-</div>
+<?php if (\app\models\User::isAdmin()): ?>
+    <div class="btn-group mb-3" role="group" aria-label="Кнопки управления">
+        <a href="/department/create" class="btn btn-primary">Добавить</a>
+    </div>
+<?php endif; ?>
 
 <?php if (empty($departments)) : ?>
     <div class="alert alert-primary" role="alert">
@@ -26,7 +28,9 @@
                         <td>
                             <div class="btn-group" role="group" aria-label="Кнопки управления">
                                 <a href="/department/<?= $department['id'] ?>" class="btn btn-primary">Просмотр</a>
-                                <a href="/department/<?= $department['id'] ?>/delete" class="btn btn-danger">Удалить</a>
+                                <?php if (\app\models\User::isAdmin()): ?>
+                                    <a href="/department/<?= $department['id'] ?>/delete" class="btn btn-danger">Удалить</a>
+                                <?php endif; ?>
                             </div>
                         </td>
                     </tr>

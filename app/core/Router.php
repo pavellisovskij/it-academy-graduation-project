@@ -65,6 +65,7 @@ class Router
     private function match3()
     {
         $url = explode('/', trim($_SERVER['REQUEST_URI'], '/'));
+//        debug($url);
         $numberOfUrlParts = count($url);
         $found = false;
 

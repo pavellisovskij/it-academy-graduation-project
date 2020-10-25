@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\core\Controller;
 use app\lib\Paginator;
 use app\models\Department;
+use app\models\User;
 use app\models\Workplace;
 
 class DepartmentController extends Controller
@@ -40,19 +41,23 @@ class DepartmentController extends Controller
     }
 
     public function create() {
-        $this->view->render('Новый отдел');
+        if (User::isAdmin()) $this->view->render('Новый отдел');
+        else $this->view->redirect('/signin');
     }
 
     public function store() {
-        if (!empty($_POST) && isset($_POST['name'])) {
-            $department = new Department();
-            $department = $department->insert([
-                'name'       => $_POST['name'],
-                'short_name' => $_POST['short_name']
-            ]);
+        if (User::isAdmin()) {
+            if (!empty($_POST) && isset($_POST['name'])) {
+                $department = new Department();
+                $department = $department->insert([
+                    'name' => $_POST['name'],
+                    'short_name' => $_POST['short_name']
+                ]);
 
-            if ($department > 0) $this->view->redirect('/departments');
+                if ($department > 0) $this->view->redirect('/departments');
+            }
         }
+        else $this->view->redirect('/signin');
     }
 
     public function show(int $id) {
@@ -88,39 +93,49 @@ class DepartmentController extends Controller
         ]);
     }
 
-    public function edit(int $id) {
-        $department = new Department();
-        $department = $department->find($id)->get();
+    public function edit(int $id)
+    {
+        if (User::isAdmin()) {
+            $department = new Department();
+            $department = $department->find($id)->get();
 
-        $this->view->render($department['name'] . '. Редактирование', [
-            'department' => $department
-        ]);
+            $this->view->render($department['name'] . '. Редактирование', [
+                'department' => $department
+            ]);
+        }
+        else $this->view->redirect('/signin');
     }
 
     public function update(int $id) {
-        $department = new Department();
-        $result = $department->update([
-            'name'       => $_POST['name'],
-            'short_name' => $_POST['short_name']
-        ], [$id]);
+        if (User::isAdmin()) {
+            $department = new Department();
+            $result = $department->update([
+                'name' => $_POST['name'],
+                'short_name' => $_POST['short_name']
+            ], [$id]);
 
-        $this->view->redirect('/department/' . $id);
+            $this->view->redirect('/department/' . $id);
+        }
+        else $this->view->redirect('/signin');
     }
 
     public function delete(int $id) {
-        $department = new Department();
-        $result = $department->delete([$id]);
+        if (User::isAdmin()) {
+            $department = new Department();
+            $result = $department->delete([$id]);
 
-        $this->view->redirect('/departments');
+            $this->view->redirect('/departments');
+        }
+        else $this->view->redirect('/signin');
     }
 
-    public function all() {
-        $departments = new Department();
-        $departments = $departments->select(['id', 'short_name'])->get();
-//        debug(date('d.m.Y'));
-        //debug($departments);
-        header("Content-type: application/json; charset=utf-8");
-
-        echo json_encode($departments);
-    }
+//    public function all() {
+//        $departments = new Department();
+//        $departments = $departments->select(['id', 'short_name'])->get();
+////        debug(date('d.m.Y'));
+//        //debug($departments);
+//        header("Content-type: application/json; charset=utf-8");
+//
+//        echo json_encode($departments);
+//    }
 }

@@ -1,8 +1,10 @@
 <div class="container-fluid">
-    <div class="btn-group pb-3" role="group" aria-label="Кнопки управления">
-        <a href="/workplace/<?= $workplace['id'] ?>/edit" class="btn btn-primary">Редактировать</a>
-        <a href="/workplace/<?= $workplace['id'] ?>/delete" class="btn btn-danger">Удалить</a>
-    </div>
+    <?php if (\app\models\User::isAdmin()): ?>
+        <div class="btn-group pb-3" role="group" aria-label="Кнопки управления">
+            <a href="/workplace/<?= $workplace['id'] ?>/edit" class="btn btn-primary">Редактировать</a>
+            <a href="/workplace/<?= $workplace['id'] ?>/delete" class="btn btn-danger">Удалить</a>
+        </div>
+    <?php endif; ?>
 
     <div class="card">
         <div class="card-header"><?= $workplace['pos'] ?></div>
