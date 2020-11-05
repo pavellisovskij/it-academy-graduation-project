@@ -12,48 +12,17 @@ class Router
     {
         $routes = require 'app/config/routes.php';
         $this->routes = $routes;
-//        foreach ($routes as $key => $val) {
-//            $this->add($key, $val);
-//        }
     }
-
-//    public function add($route, $params)
-//    {
-//        //$route = '#^' . $route . '$#';
-//        $this->routes[$route] = $params;
-//    }
-
-//    public function match()
-//    {
-//        $url = trim($_SERVER['REQUEST_URI'], '/');
-//        foreach ($this->routes as $route => $params) {
-//            if (preg_match($route, $url, $matches)) {
-//                $this->params = $params;
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
 
     public function run()
     {
-        $match = $this->match3();
+        $match = $this->match();
 
         if ($match !== false) {
             $path = 'app\controllers\\' . ucfirst($this->params['controller']) . 'Controller';
 
             if (class_exists($path)) {
-                $action = $this->params['action'];
-
-                if (method_exists($path, $action)) {
-                    $controller = new $path($this->params);
-
-                    if (count($this->extraParams) === 0) $controller->$action();
-                    else $controller->$action(...$this->extraParams);
-
-                } else {
-                    View::errorCode(404);
-                }
+                $controller = new $path($this->params, $this->extraParams);
             } else {
                 View::errorCode(404);
             }
@@ -62,10 +31,10 @@ class Router
         }
     }
 
-    private function match3()
+    private function match()
     {
         $url = explode('/', trim($_SERVER['REQUEST_URI'], '/'));
-//        debug($url);
+
         $numberOfUrlParts = count($url);
         $found = false;
 

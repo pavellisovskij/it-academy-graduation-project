@@ -6,12 +6,21 @@ use app\core\View;
 
 abstract class Controller
 {
-    public $route;
-    public $view;
+    protected $route;
+    protected $view;
 
-    public function __construct($route)
+    public function __construct(array $route, array $params)
     {
-        $this->route = $route;
-        $this->view = new View($route);
+        if (method_exists($this, $route['action'])) {
+            $this->route = $route;
+            $this->view  = new View($route);
+            $action      = $route['action'];
+
+            if (count($params) === 0) $this->$action();
+            else $this->$action(...$params);
+        }
+        else {
+            View::errorCode(404);
+        }
     }
 }

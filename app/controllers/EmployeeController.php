@@ -6,7 +6,6 @@ use app\core\Controller;
 use app\core\View;
 use app\lib\Flash;
 use app\lib\Paginator;
-use app\models\Department;
 use app\models\Employee;
 use app\models\User;
 use app\models\Workplace;

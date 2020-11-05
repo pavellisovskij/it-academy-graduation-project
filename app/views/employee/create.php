@@ -63,26 +63,26 @@
     </form>
 </div>
 
-<script src="/public/js/vue.js"></script>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script>
-    var depPos = new Vue({
-        el: '#select-department',
-        data: {
-            departments: [],
-        },
-        mounted: function() {
-            this.getDepartments();
-        },
-        methods: {
-            getDepartments: function () {
-                axios.get('/departments/all')
-                .then(function (response) {
-                    // console.log(response.data[0].id);
-                    // console.log(JSON.parse(response.data));
-                    this.departments = response.data;
-                })
-            }
-        }
-    })
-</script>
+<!--<script src="/public/js/vue.js"></script>-->
+<!--<script src="https://unpkg.com/axios/dist/axios.min.js"></script>-->
+<!--<script>-->
+<!--    var depPos = new Vue({-->
+<!--        el: '#select-department',-->
+<!--        data: {-->
+<!--            departments: [],-->
+<!--        },-->
+<!--        mounted: function() {-->
+<!--            this.getDepartments();-->
+<!--        },-->
+<!--        methods: {-->
+<!--            getDepartments: function () {-->
+<!--                axios.get('/departments/all')-->
+<!--                .then(function (response) {-->
+<!--                    // console.log(response.data[0].id);-->
+<!--                    // console.log(JSON.parse(response.data));-->
+<!--                    this.depPos.departments = response.data;-->
+<!--                })-->
+<!--            }-->
+<!--        }-->
+<!--    })-->
+<!--</script>-->

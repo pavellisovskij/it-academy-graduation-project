@@ -12,6 +12,6 @@ class PasswordRule extends AbstractRule
 
     function validate($value,string $valueIdentifier = null) :bool
     {
-        return (bool) preg_match('/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{4,8}$/', $value);
+        return (bool) preg_match('/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{4,16}$/', $value);
     }
 }
