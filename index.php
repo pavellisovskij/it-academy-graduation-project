@@ -8,14 +8,16 @@ $dotenv->load();
 /**
  * dev settings
  */
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
+if ($_ENV['APP_DEBUG']) {
+    ini_set('display_errors', 1);
+    error_reporting(E_ALL);
 
-function debug($var) {
-    echo '<pre>';
-    var_dump($var);
-    echo '</pre>';
-    exit;
+    function debug($var) {
+        echo '<pre>';
+        var_dump($var);
+        echo '</pre>';
+        exit;
+    }
 }
 
 /**
