@@ -4,25 +4,18 @@ namespace app\core;
 
 class Router
 {
-    protected $routes       = [];
-    protected $params       = [];
-    protected $extraParams  = [];
+    static private $params      = [];
+    static private $extraParams = [];
 
-    public function __construct()
+    public static function run()
     {
-        $routes = require 'app/config/routes.php';
-        $this->routes = $routes;
-    }
-
-    public function run()
-    {
-        $match = $this->match();
+        $match = self::match();
 
         if ($match !== false) {
-            $path = 'app\controllers\\' . ucfirst($this->params['controller']) . 'Controller';
+            $path = 'app\controllers\\' . ucfirst(self::$params['controller']) . 'Controller';
 
             if (class_exists($path)) {
-                $controller = new $path($this->params, $this->extraParams);
+                $controller = new $path(self::$params, self::$extraParams);
             } else {
                 View::errorCode(404);
             }
@@ -31,14 +24,15 @@ class Router
         }
     }
 
-    private function match()
+    private static function match()
     {
-        $url = explode('/', trim($_SERVER['REQUEST_URI'], '/'));
+        $url    = explode('/', trim($_SERVER['REQUEST_URI'], '/'));
+        $routes = require 'app/config/routes.php';
 
         $numberOfUrlParts = count($url);
-        $found = false;
+        $found            = false;
 
-        foreach ($this->routes as $route => $params) {
+        foreach ($routes as $route => $params) {
             $route = explode('/', trim($route, '/'));
             $extraParams = [];
 
@@ -46,39 +40,24 @@ class Router
                 $conformity = false;
 
                 for ($i = 0; $i < $numberOfUrlParts; $i++) {
-                    if ($url[$i] === $route[$i]) $conformity = true;
-                    elseif ($this->isParam($route[$i]) === true) {
-                        $route[$i] = explode('_', trim($route[$i], '{}'));
+                    $result = self::isCoincidence($url[$i], $route[$i]);
 
-                        try {
-                            if ($route[$i][0] === 'int') $pattern = '#^\d+$#';
-                            elseif ($route[$i][0] === 'str') $pattern = '#^[а-яА-ЯёЁa-zA-Z0-9\-_\.@]+$#';
-                            else throw new \Exception('Ошибка в наименовании параметров. Параметр должен иметь приставку "int_" или "str_".');
-                        } catch (\Exception $e) {
-                            View::error_page_with_message($e->getMessage());
-                        }
-
-                        if (preg_match($pattern, $url[$i]) === 1) {
-                            $extraParams[]  = $url[$i];
-                            $conformity     = true;
-                        }
-                        else {
-                            $conformity = false;
-                            break;
-                        }
-
-                    }
-                    else {
+                    if ($result === true) $conformity = true;
+                    elseif ($result === false) {
                         $conformity = false;
                         break;
+                    }
+                    else {
+                        $conformity    = true;
+                        $extraParams[] = $result;
                     }
                 }
             }
             else continue;
 
             if ($conformity === true) {
-                $this->params       = $params;
-                $this->extraParams  = $extraParams;
+                self::$params       = $params;
+                self::$extraParams  = $extraParams;
                 $found = true;
                 break;
             }
@@ -88,11 +67,36 @@ class Router
             }
         }
 
-        if ($found === true) return true;
+        return $found;
+    }
+
+    private static function isCoincidence(string $urlPart, string $routePart) {
+        if ($urlPart === $routePart) return true;
+        elseif (self::isParam($routePart) === true) {
+            $result = self::isCoincidenceWithParam($urlPart, $routePart);
+
+            if ($result !== false) return $result;
+            else return false;
+        }
         else return false;
     }
 
-    private function isParam(string $str) {
+    private static function isCoincidenceWithParam(string $urlPart, string $routePart) {
+        $routePart = explode('_', trim($routePart, '{}'));
+
+        try {
+            if ($routePart[0] === 'int') $pattern = '#^\d+$#';
+            elseif ($routePart[0] === 'str') $pattern = '#^[а-яА-ЯёЁa-zA-Z0-9\-_\.@]+$#';
+            else throw new \Exception('Ошибка в наименовании параметров. Параметр должен иметь приставку "int_" или "str_".');
+        } catch (\Exception $e) {
+            View::error_page_with_message($e->getMessage());
+        }
+
+        if (preg_match($pattern, $urlPart) === 1) return $urlPart;
+        else return false;
+    }
+
+    private static function isParam(string $str) {
         if (
             substr($str, 0, 1) === '{' &&
             substr($str, strlen($str) - 1, 1) === '}'

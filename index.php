@@ -8,6 +8,7 @@ $dotenv->load();
 /**
  * dev settings
  */
+
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
@@ -32,5 +33,4 @@ spl_autoload_register(function ($class) {
 
 session_start();
 
-$router = new Router();
-$router->run();
+Router::run();
