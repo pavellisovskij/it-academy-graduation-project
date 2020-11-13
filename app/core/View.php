@@ -30,12 +30,6 @@ class View
         }
     }
 
-    public function redirect($url)
-    {
-        header('location: ' . $url);
-        exit();
-    }
-
     public static function errorCode(int $code)
     {
         http_response_code($code);

@@ -7,6 +7,12 @@ class Router
     static private $params      = [];
     static private $extraParams = [];
 
+    public static function redirect($url)
+    {
+        header('location: ' . $url);
+        exit();
+    }
+
     public static function run()
     {
         $match = self::match();

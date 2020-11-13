@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\core\Controller;
+use app\core\Router;
 use app\lib\Paginator;
 use app\models\Position;
 use app\models\User;
@@ -33,7 +34,7 @@ class PositionController extends Controller
 
     public function create() {
         if (User::isAdmin()) $this->view->render('Новая должность');
-        else $this->view->redirect('/signin');
+        else Router::redirect('/signin');
     }
 
     public function store()
@@ -46,9 +47,9 @@ class PositionController extends Controller
                     'position_code' => $_POST['position_code']
                 ]);
             }
-            $this->view->redirect('/positions');
+            Router::redirect('/positions');
         }
-        else $this->view->redirect('/signin');
+        else Router::redirect('/signin');
     }
 
     public function delete($id) {
@@ -56,8 +57,8 @@ class PositionController extends Controller
             $position = new Position();
             $result = $position->delete([$id]);
 
-            $this->view->redirect('/positions');
+            Router::redirect('/positions');
         }
-        else $this->view->redirect('/signin');
+        else Router::redirect('/signin');
     }
 }

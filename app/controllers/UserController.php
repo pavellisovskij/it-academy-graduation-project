@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\core\Controller;
 use app\core\View;
+use app\core\Router;
 use app\lib\Flash;
 use app\models\User;
 use Sirius\Validation\Validator;
@@ -61,24 +62,24 @@ class UserController extends Controller
 
                 if (password_verify($_POST['password'], $user['password_hash']) === true) {
                     $_SESSION['username'] = $_POST['username'];
-                    $this->view->redirect('/workplaces');
+                    Router::redirect('/workplaces');
                 }
                 else {
                     Flash::set('auth_fail', 'Введены неверные учетные данные.');
-                    $this->view->redirect('/signin');
+                    Router::redirect('/signin');
                 }
             }
         }
         else {
             Flash::set('auth_fail', 'Введены неверные учетные данные.');
-            $this->view->redirect('/signin');
+            Router::redirect('/signin');
         }
     }
 
     public function logout() {
         if (User::isAdmin()) {
             unset($_SESSION['username']);
-            $this->view->redirect('/workplaces');
+            Router::redirect('/workplaces');
         }
         else View::errorCode(403);
     }

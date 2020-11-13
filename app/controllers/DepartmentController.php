@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\core\Controller;
+use app\core\Router;
 use app\lib\Paginator;
 use app\models\Department;
 use app\models\User;
@@ -42,7 +43,7 @@ class DepartmentController extends Controller
 
     public function create() {
         if (User::isAdmin()) $this->view->render('Новый отдел');
-        else $this->view->redirect('/signin');
+        else Router::redirect('/signin');
     }
 
     public function store() {
@@ -54,10 +55,10 @@ class DepartmentController extends Controller
                     'short_name' => $_POST['short_name']
                 ]);
 
-                if ($department > 0) $this->view->redirect('/departments');
+                if ($department > 0) Router::redirect('/departments');
             }
         }
-        else $this->view->redirect('/signin');
+        else Router::redirect('/signin');
     }
 
     public function show(int $id) {
@@ -103,7 +104,7 @@ class DepartmentController extends Controller
                 'department' => $department
             ]);
         }
-        else $this->view->redirect('/signin');
+        else Router::redirect('/signin');
     }
 
     public function update(int $id) {
@@ -114,9 +115,9 @@ class DepartmentController extends Controller
                 'short_name' => $_POST['short_name']
             ], [$id]);
 
-            $this->view->redirect('/department/' . $id);
+            Router::redirect('/department/' . $id);
         }
-        else $this->view->redirect('/signin');
+        else Router::redirect('/signin');
     }
 
     public function delete(int $id) {
@@ -124,9 +125,9 @@ class DepartmentController extends Controller
             $department = new Department();
             $result = $department->delete([$id]);
 
-            $this->view->redirect('/departments');
+            Router::redirect('/departments');
         }
-        else $this->view->redirect('/signin');
+        else Router::redirect('/signin');
     }
 
 //    public function all() {
