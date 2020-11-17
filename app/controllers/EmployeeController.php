@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\core\Controller;
 use app\core\View;
+use app\core\Router;
 use app\lib\Flash;
 use app\lib\Paginator;
 use app\models\Employee;
@@ -51,7 +52,7 @@ class EmployeeController extends Controller
             ", Workplace::FETCH_ALL_METHOD);
 
             $this->view->render('Новый сотрудник', ['workplaces' => $workplaces]);
-        } else $this->view->redirect('/signin');
+        } else Router::redirect('/signin');
     }
 
     public function store() {
@@ -72,10 +73,10 @@ class EmployeeController extends Controller
                     'employee_id' => $employee
                 ], [$_POST['workplace']]);
 
-                if ($workplace > 0) $this->view->redirect("/employee/$employee");
+                if ($workplace > 0) Router::redirect("/employee/$employee");
             }
         }
-        else $this->view->redirect('signin');
+        else Router::redirect('signin');
     }
 
     public function show($id) {
@@ -146,32 +147,32 @@ class EmployeeController extends Controller
             }
             else View::errorCode(404);
         }
-        else $this->view->redirect('signin');
+        else Router::redirect('signin');
     }
 
     public function update($id) {
         if (User::isAdmin()) {
             if ($_POST['fired'] == '' || !isset($_POST['workplace'])) {
                 Flash::set('error', 'Нечего обновлять');
-                $this->view->redirect('/employee/' . $id . '/edit');
+                Router::redirect('/employee/' . $id . '/edit');
             }
             elseif ($_POST['fired'] != '' && isset($_POST['workplace']))
             {
                 Flash::set('error', 'Нельзя уволить и одновременно назначить новое рабочее место.');
-                $this->view->redirect('/employee/' . $id . '/edit');
+                Router::redirect('/employee/' . $id . '/edit');
             }
             elseif ($_POST['fired'] == '' && isset($_POST['workplace'])) {
                 $workplace = new Workplace();
                 $workplace = $workplace->update(['employee_id' => $id], [$_POST['workplace']]);
-                $this->view->redirect('/employee/' . $id);
+                Router::redirect('/employee/' . $id);
             }
             elseif ($_POST['fired'] != '' && !isset($_POST['workplace'])) {
                 $employee = new Employee();
                 $employee = $employee->update(['fired' => $_POST['fired']], [$id]);
-                $this->view->redirect('/employee/' . $id);
+                Router::redirect('/employee/' . $id);
             }
         }
-        else $this->view->redirect('/signin');
+        else Router::redirect('/signin');
     }
 
     public function delete($id) {
@@ -180,9 +181,9 @@ class EmployeeController extends Controller
             $result = $employee->delete([$id]);
 
             if ($result > 0) {
-                $this->view->redirect('/employees');
+                Router::redirect('/employees');
             }
         }
-        else $this->view->redirect('/signin');
+        else Router::redirect('/signin');
     }
 }

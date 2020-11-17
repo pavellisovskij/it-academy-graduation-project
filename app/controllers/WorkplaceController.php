@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\core\Controller;
 use app\core\View;
+use app\core\Router;
 use app\lib\Paginator;
 use app\models\Department;
 use app\models\Position;
@@ -67,7 +68,7 @@ class WorkplaceController extends Controller
                 'positions' => $positions
             ]);
         }
-        else $this->view->redirect('/signin');
+        else Router::redirect('/signin');
     }
 
     public function store() {
@@ -83,7 +84,7 @@ class WorkplaceController extends Controller
                 if ($workplaces > 0) $this->view->redirect('/workplaces');
             }
         }
-        else $this->view->redirect('/signin');
+        else Router::redirect('/signin');
     }
 
     public function show($id) {
@@ -142,7 +143,7 @@ class WorkplaceController extends Controller
                 'workplace'   => $workplace
             ]);
         }
-        else $this->view->redirect('/signin');
+        else Router::redirect('/signin');
     }
 
     public function update($id) {
@@ -155,11 +156,11 @@ class WorkplaceController extends Controller
                     'position_id'   => $_POST['position']
                 ], [$id]);
 
-                if ($workplace > 0) $this->view->redirect("/workplace/$id");
+                if ($workplace > 0) Router::redirect("/workplace/$id");
             }
 
         }
-        else $this->view->redirect('/signin');
+        else Router::redirect('/signin');
     }
 
     public function delete($id) {
@@ -170,13 +171,13 @@ class WorkplaceController extends Controller
             if ($workplaceById['employee_id'] === null) {
                 $result = $workplace->delete([$id]);
 
-                if ($result > 0) $this->view->redirect('/workplaces');
+                if ($result > 0) Router::redirect('/workplaces');
                 else View::errorCode(400);
             }
             else {
-                $this->view->redirect("/workplace/$id");
+                Router::redirect("/workplace/$id");
             }
         }
-        else $this->view->redirect('/signin');
+        else Router::redirect('/signin');
     }
 }
