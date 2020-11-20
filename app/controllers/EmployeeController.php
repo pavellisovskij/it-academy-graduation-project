@@ -5,11 +5,13 @@ namespace app\controllers;
 use app\core\Controller;
 use app\core\View;
 use app\core\Router;
+use app\lib\Auth;
 use app\lib\Flash;
 use app\lib\Paginator;
 use app\models\Employee;
 use app\models\User;
 use app\models\Workplace;
+use Rakit\Validation\Validator;
 
 class EmployeeController extends Controller
 {
@@ -36,7 +38,7 @@ class EmployeeController extends Controller
 
     public function create()
     {
-        if (User::isAdmin()) {
+        if (Auth::check()) {
             $workplaces = new Workplace();
             $workplaces = $workplaces->query("
                 SELECT 
@@ -52,20 +54,42 @@ class EmployeeController extends Controller
             ", Workplace::FETCH_ALL_METHOD);
 
             $this->view->render('Новый сотрудник', ['workplaces' => $workplaces]);
-        } else Router::redirect('/signin');
+        }
+        else Router::redirect('/signin');
     }
 
     public function store() {
-        if (User::isAdmin()) {
-            if (!empty($_POST) && isset($_POST['surname'])) {
+        if (Auth::check()) {
+            $validator = new Validator();
+
+            $validation = $validator->make($_POST, [
+                'surname'       => 'required|min:1|max:20',
+                'firstname'     => 'required|min:1|max:20',
+                'patronymic'    => 'required|min:1|max:20',
+                'birthday'      => 'required|date:d.m.Y',
+                'hired'         => 'required|date:d.m.Y',
+                'medical_exam'  => 'required|date:d.m.Y'
+            ]);
+            $validation->validate();
+
+            if ($validation->fails()) {
+                $errors = $validation->errors();
+
+                foreach ($errors->firstOfAll() as $field => $message) {
+                    Flash::set($field, $message);
+                }
+
+                Router::redirect('/employee/create');
+            }
+            else {
                 $employee = new Employee();
                 $employee = $employee->insert([
-                    'surname' => $_POST['surname'],
-                    'firstname' => $_POST['firstname'],
-                    'patronymic' => $_POST['patronymic'],
-                    'birthday' => $_POST['birthday'],
-                    'hired' => $_POST['hired'],
-                    'medical_exam' => $_POST['medical_exam']
+                    'surname'       => $_POST['surname'],
+                    'firstname'     => $_POST['firstname'],
+                    'patronymic'    => $_POST['patronymic'],
+                    'birthday'      => $_POST['birthday'],
+                    'hired'         => $_POST['hired'],
+                    'medical_exam'  => $_POST['medical_exam']
                 ]);
 
                 $workplace = new Workplace();
@@ -73,7 +97,7 @@ class EmployeeController extends Controller
                     'employee_id' => $employee
                 ], [$_POST['workplace']]);
 
-                if ($workplace > 0) Router::redirect("/employee/$employee");
+                Router::redirect("/employee/$employee");
             }
         }
         else Router::redirect('signin');
@@ -107,11 +131,9 @@ class EmployeeController extends Controller
     }
 
     public function edit($id) {
-        if (User::isAdmin()) {
+        if (Auth::check()) {
             $employee = new Employee();
             $employee = $employee->find($id)->get();
-            $exam = new \DateTime($employee['medical_exam']);
-            $employee['medical_exam'] = $exam->format('d.m.Y');
 
             if (!empty($employee)) {
                 $workplaces = new Workplace();
@@ -151,7 +173,7 @@ class EmployeeController extends Controller
     }
 
     public function update($id) {
-        if (User::isAdmin()) {
+        if (Auth::check()) {
             if ($_POST['fired'] == '' || !isset($_POST['workplace'])) {
                 Flash::set('error', 'Нечего обновлять');
                 Router::redirect('/employee/' . $id . '/edit');
@@ -176,13 +198,11 @@ class EmployeeController extends Controller
     }
 
     public function delete($id) {
-        if (User::isAdmin()) {
+        if (Auth::check()) {
             $employee = new Employee();
             $result = $employee->delete([$id]);
 
-            if ($result > 0) {
-                Router::redirect('/employees');
-            }
+            Router::redirect('/employees');
         }
         else Router::redirect('/signin');
     }

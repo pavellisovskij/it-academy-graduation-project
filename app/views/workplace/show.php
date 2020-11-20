@@ -1,5 +1,5 @@
 <div class="container-fluid">
-    <?php if (\app\models\User::isAdmin()): ?>
+    <?php if (\app\lib\Auth::check()): ?>
         <div class="btn-group pb-3" role="group" aria-label="Кнопки управления">
             <a href="/workplace/<?= $workplace['id'] ?>/edit" class="btn btn-primary">Редактировать</a>
             <a href="/workplace/<?= $workplace['id'] ?>/delete" class="btn btn-danger">Удалить</a>

@@ -5,11 +5,14 @@ namespace app\controllers;
 use app\core\Controller;
 use app\core\View;
 use app\core\Router;
+use app\lib\Auth;
+use app\lib\Flash;
 use app\lib\Paginator;
 use app\models\Department;
 use app\models\Position;
 use app\models\User;
 use app\models\Workplace;
+use Rakit\Validation\Validator;
 
 class WorkplaceController extends Controller
 {
@@ -56,7 +59,7 @@ class WorkplaceController extends Controller
     }
 
     public function create() {
-        if (User::isAdmin() === true) {
+        if (Auth::check()) {
             $department = new Department();
             $departments = $department->all()->get();
 
@@ -72,16 +75,32 @@ class WorkplaceController extends Controller
     }
 
     public function store() {
-        if (User::isAdmin() === true) {
-            if (!empty($_POST)) {
+        if (Auth::check()) {
+            $validator = new Validator();
+
+            $validation = $validator->make($_POST, [
+                'rate' => 'required|max:1|min:0.1'
+            ]);
+            $validation->validate();
+
+            if ($validation->fails()) {
+                $errors = $validation->errors();
+
+                foreach ($errors->firstOfAll() as $field => $message) {
+                    Flash::set($field, $message);
+                }
+
+                Router::redirect('/workplace/create');
+            }
+            else {
                 $workplace = new Workplace();
                 $workplaces = $workplace->insert([
-                    'rate' => $_POST['rate'],
+                    'rate'          => $_POST['rate'],
                     'department_id' => $_POST['department'],
-                    'position_id' => $_POST['position']
+                    'position_id'   => $_POST['position']
                 ]);
 
-                if ($workplaces > 0) $this->view->redirect('/workplaces');
+                Router::redirect('/workplaces');
             }
         }
         else Router::redirect('/signin');
@@ -116,7 +135,7 @@ class WorkplaceController extends Controller
     }
 
     public function edit($id) {
-        if (User::isAdmin()) {
+        if (Auth::check()) {
             $workplace = new Workplace();
             $workplace = $workplace->query("
             SELECT 
@@ -147,8 +166,24 @@ class WorkplaceController extends Controller
     }
 
     public function update($id) {
-        if (User::isAdmin()) {
-            if (!empty($_POST)) {
+        if (Auth::check()) {
+            $validator = new Validator();
+
+            $validation = $validator->make($_POST, [
+                'rate' => 'required|max:1|min:0.1'
+            ]);
+            $validation->validate();
+
+            if ($validation->fails()) {
+                $errors = $validation->errors();
+
+                foreach ($errors->firstOfAll() as $field => $message) {
+                    Flash::set($field, $message);
+                }
+
+                Router::redirect("/workplace/$id/edit");
+            }
+            else {
                 $workplace  = new Workplace();
                 $workplace = $workplace->update([
                     'rate'          => $_POST['rate'],
@@ -156,15 +191,14 @@ class WorkplaceController extends Controller
                     'position_id'   => $_POST['position']
                 ], [$id]);
 
-                if ($workplace > 0) Router::redirect("/workplace/$id");
+                Router::redirect("/workplace/$id");
             }
-
         }
         else Router::redirect('/signin');
     }
 
     public function delete($id) {
-        if (User::isAdmin()) {
+        if (Auth::check()) {
             $workplace = new Workplace();
             $workplaceById = $workplace->find($id)->get();
 

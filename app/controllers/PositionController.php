@@ -4,9 +4,12 @@ namespace app\controllers;
 
 use app\core\Controller;
 use app\core\Router;
+use app\lib\Auth;
+use app\lib\Flash;
 use app\lib\Paginator;
 use app\models\Position;
 use app\models\User;
+use Rakit\Validation\Validator;
 
 class PositionController extends Controller
 {
@@ -33,27 +36,44 @@ class PositionController extends Controller
     }
 
     public function create() {
-        if (User::isAdmin()) $this->view->render('Новая должность');
+        if (Auth::check()) $this->view->render('Новая должность');
         else Router::redirect('/signin');
     }
 
-    public function store()
-    {
-        if (User::isAdmin()) {
-            if (!empty($_POST) && isset($_POST['name'])) {
+    public function store() {
+        if (Auth::check()) {
+            $validator = new Validator();
+
+            $validation = $validator->make($_POST, [
+                'name'          => 'required|max:50|min:4',
+                'position_code' => 'required|max:8|min:8|regex:/^[0-9]{4}-[0-9]{3}$/'
+            ]);
+            $validation->validate();
+
+            if ($validation->fails()) {
+                $errors = $validation->errors();
+
+                foreach ($errors->firstOfAll() as $field => $message) {
+                    Flash::set($field, $message);
+                }
+
+                Router::redirect('/position/create');
+            }
+            else {
                 $position = new Position();
                 $position = $position->insert([
-                    'name' => $_POST['name'],
+                    'name'          => $_POST['name'],
                     'position_code' => $_POST['position_code']
                 ]);
+
+                Router::redirect('/positions');
             }
-            Router::redirect('/positions');
         }
         else Router::redirect('/signin');
     }
 
     public function delete($id) {
-        if (User::isAdmin()) {
+        if (Auth::check()) {
             $position = new Position();
             $result = $position->delete([$id]);
 

@@ -46,8 +46,6 @@ class Paginator
             // Последняя страница
             $this->add($link, $page - 1, 'alert alert-light', '>>');
         }
-
-
     }
 
     private function add(string $link, int $page, string $class, string $symbol) {

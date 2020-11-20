@@ -2,6 +2,11 @@
     <form action="/employee/store" method="post">
         <div class="row">
             <div class="col">
+                <?php if (\app\lib\Flash::is_set('surname')) : ?>
+                    <div class="alert alert-danger" role="alert">
+                        <?= \app\lib\Flash::get('surname') ?>
+                    </div>
+                <?php endif; ?>
                 <div class="form-group">
                     <label for="surname" class="form-label">Фамилия</label>
                     <input type="text" name="surname" class="form-control" id="surname" required max="20" min="1">
@@ -9,6 +14,11 @@
             </div>
 
             <div class="col">
+                <?php if (\app\lib\Flash::is_set('firstname')) : ?>
+                    <div class="alert alert-danger" role="alert">
+                        <?= \app\lib\Flash::get('firstname') ?>
+                    </div>
+                <?php endif; ?>
                 <div class="form-group">
                     <label for="firstname" class="form-label">Имя</label>
                     <input type="text" name="firstname" class="form-control" id="firstname" required max="20" min="1">
@@ -16,6 +26,11 @@
             </div>
 
             <div class="col">
+                <?php if (\app\lib\Flash::is_set('patronymic')) : ?>
+                    <div class="alert alert-danger" role="alert">
+                        <?= \app\lib\Flash::get('patronymic') ?>
+                    </div>
+                <?php endif; ?>
                 <div class="form-group">
                     <label for="patronymic" class="form-label">Отчество</label>
                     <input type="text" name="patronymic" class="form-control" id="patronymic" required max="20" min="1">
@@ -25,6 +40,11 @@
 
         <div class="row">
             <div class="col">
+                <?php if (\app\lib\Flash::is_set('birthday')) : ?>
+                    <div class="alert alert-danger" role="alert">
+                        <?= \app\lib\Flash::get('birthday') ?>
+                    </div>
+                <?php endif; ?>
                 <div class="form-group">
                     <label for="birthday" class="form-label">День рождения</label>
                     <input type="date" name="birthday" class="form-control" id="birthday" required>
@@ -32,6 +52,11 @@
             </div>
 
             <div class="col">
+                <?php if (\app\lib\Flash::is_set('hired')) : ?>
+                    <div class="alert alert-danger" role="alert">
+                        <?= \app\lib\Flash::get('hired') ?>
+                    </div>
+                <?php endif; ?>
                 <div class="form-group">
                     <label for="hired" class="form-label">Нанят</label>
                     <input type="date" name="hired" class="form-control" id="hired" required>
@@ -39,6 +64,11 @@
             </div>
 
             <div class="col">
+                <?php if (\app\lib\Flash::is_set('medical_exam')) : ?>
+                    <div class="alert alert-danger" role="alert">
+                        <?= \app\lib\Flash::get('medical_exam') ?>
+                    </div>
+                <?php endif; ?>
                 <div class="form-group">
                     <label for="medical_exam" class="form-label">Медицинский осмотр</label>
                     <input type="date" name="medical_exam" class="form-control" id="medical_exam" required>
@@ -57,7 +87,7 @@
 
         <div class="row">
             <div class="col-md-2">
-                <button class="btn btn-primary btn-block" type="submit">Создать</button>
+                <button class="btn btn-primary" type="submit">Создать</button>
             </div>
         </div>
     </form>

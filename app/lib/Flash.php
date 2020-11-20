@@ -2,9 +2,9 @@
 
 namespace app\lib;
 
-class Flash
+final class Flash
 {
-    protected static $message = '';
+    private static $message = '';
 
     public static function set($key, $value)
     {

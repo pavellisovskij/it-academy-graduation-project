@@ -1,6 +1,6 @@
 <div class="container-fluid">
     <form action="/workplace/<?= $workplace['id'] ?>/update" method="post">
-        <div class="form-group col-md-6">
+        <div class="form-group">
             <label for="department">Отдел</label>
             <select class="form-control" id="department" name="department" required>
                 <?php foreach ($departments as $department) : ?>
@@ -13,7 +13,7 @@
             </select>
         </div>
 
-        <div class="form-group col-md-6">
+        <div class="form-group">
             <label for="position">Должность / Профессия</label>
             <select class="form-control" id="position" name="position" required>
                 <?php foreach ($positions as $position) : ?>
@@ -26,13 +26,18 @@
             </select>
         </div>
 
-        <div class="form-group col-md-2">
+        <?php if (\app\lib\Flash::is_set('rate')) : ?>
+            <div class="alert alert-danger" role="alert">
+                <?= \app\lib\Flash::get('rate') ?>
+            </div>
+        <?php endif; ?>
+        <div class="form-group">
             <label for="rate" class="form-label">Ставка</label>
             <input type="number" name="rate" class="form-control" id="rate" required max="1.0" min="0.1" step="0.05" value="<?= $workplace['rate'] ?>">
         </div>
 
         <div class="col-md-2">
-            <button class="btn btn-primary btn-block" type="submit">Обновить</button>
+            <button class="btn btn-primary" type="submit">Обновить</button>
         </div>
     </form>
 </div>

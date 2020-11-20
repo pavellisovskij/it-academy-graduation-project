@@ -1,4 +1,4 @@
-<?php if (\app\models\User::isAdmin()) : ?>
+<?php if (\app\lib\Auth::check()) : ?>
     <div class="btn-group mb-3" role="group" aria-label="Кнопки управления">
         <a href="/employee/create" class="btn btn-primary">Добавить</a>
     </div>
@@ -29,7 +29,7 @@
                         <td><?= $employee['hired'] ?></td>
                         <td>
                             <a href="/employee/<?= $employee['id'] ?>" class="btn btn-primary">Просмотр</a>
-                            <?php if (\app\models\User::isAdmin()) : ?>
+                            <?php if (\app\lib\Auth::check()) : ?>
                                 <a href="/employee/<?= $employee['id'] ?>/edit" class="btn btn-primary">Редактировать</a>
                             <?php endif; ?>
                         </td>

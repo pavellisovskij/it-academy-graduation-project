@@ -1,4 +1,4 @@
-<?php if (\app\models\User::isAdmin()): ?>
+<?php if (\app\lib\Auth::check()): ?>
     <div class="btn-group mb-3" role="group" aria-label="Кнопки управления">
         <a href="/department/<?= $department['id'] ?>/edit" class="btn btn-primary">Редактировать</a>
         <a href="/department/<?= $department['id'] ?>/delete" class="btn btn-danger">Удалить</a>
@@ -14,22 +14,26 @@
         <table class="table table-striped table-sm">
             <thead>
                 <tr>
-                    <th>Название отдела</th>
-                    <th>Короткое название</th>
-                    <th>Рабочих мест</th>
+                    <th>Должность/профессия</th>
+                    <th>Ставка</th>
+                    <th>Ф.И.О.</th>
                 </tr>
             </thead>
             <tbody>
-            <?php foreach ($departments as $department) : ?>
+            <?php foreach ($workplaces as $workplace) : ?>
                 <tr>
-                    <td><?= $department['name'] ?></td>
-                    <td><?= $department['short_name'] ?></td>
-                    <td></td>
+                    <td><?= $workplace['pos'] ?></td>
+                    <td><?= $workplace['rate'] ?></td>
+                    <td>
+                        <?php if ($workplace['firstname'] === null): ?>
+                            ВАКАНТ
+                        <?php else: ?>
+                            <?= $workplace['surname'] ?> <?= $workplace['firstname'] ?> <?= $workplace['patronymic'] ?>
+                        <?php endif; ?>
+                    </td>
                 </tr>
             <?php endforeach; ?>
             </tbody>
         </table>
     </div>
-
-    <?php $paginator->render() ?>
 <?php endif; ?>

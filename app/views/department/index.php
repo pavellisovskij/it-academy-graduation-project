@@ -1,4 +1,4 @@
-<?php if (\app\models\User::isAdmin()): ?>
+<?php if (\app\lib\Auth::check()): ?>
     <div class="btn-group mb-3" role="group" aria-label="Кнопки управления">
         <a href="/department/create" class="btn btn-primary">Добавить</a>
     </div>
@@ -28,7 +28,7 @@
                         <td>
                             <div class="btn-group" role="group" aria-label="Кнопки управления">
                                 <a href="/department/<?= $department['id'] ?>" class="btn btn-primary">Просмотр</a>
-                                <?php if (\app\models\User::isAdmin()): ?>
+                                <?php if (\app\lib\Auth::check()): ?>
                                     <a href="/department/<?= $department['id'] ?>/delete" class="btn btn-danger">Удалить</a>
                                 <?php endif; ?>
                             </div>

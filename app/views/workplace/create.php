@@ -18,6 +18,11 @@
             </select>
         </div>
 
+        <?php if (\app\lib\Flash::is_set('rate')) : ?>
+            <div class="alert alert-danger" role="alert">
+                <?= \app\lib\Flash::get('rate') ?>
+            </div>
+        <?php endif; ?>
         <div class="form-group col-2">
             <label for="rate" class="form-label">Ставка</label>
             <input type="number" name="rate" class="form-control" id="rate" required max="1.0" min="0.1" step="0.05" value="0.1">
@@ -25,7 +30,7 @@
 
 
         <div class="col-2">
-            <button class="btn btn-primary btn-block" type="submit">Создать</button>
+            <button class="btn btn-primary" type="submit">Создать</button>
         </div>
     </form>
 </div>

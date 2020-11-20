@@ -4,10 +4,13 @@ namespace app\controllers;
 
 use app\core\Controller;
 use app\core\Router;
+use app\lib\Auth;
+use app\lib\Flash;
 use app\lib\Paginator;
 use app\models\Department;
 use app\models\User;
 use app\models\Workplace;
+use Rakit\Validation\Validator;
 
 class DepartmentController extends Controller
 {
@@ -31,6 +34,7 @@ class DepartmentController extends Controller
                 ON workplaces.department_id = departments.id
             GROUP BY workplaces.department_id, departments.name
             ORDER BY departments.name ASC
+            LIMIT $departmentPerPage OFFSET $offset
         ", Department::FETCH_ALL_METHOD);
 
         $paginator = new Paginator($pages, $page, 2, '../departments/page/');
@@ -42,20 +46,38 @@ class DepartmentController extends Controller
     }
 
     public function create() {
-        if (User::isAdmin()) $this->view->render('Новый отдел');
+        if (Auth::check()) $this->view->render('Новый отдел');
         else Router::redirect('/signin');
     }
 
     public function store() {
-        if (User::isAdmin()) {
+        if (Auth::check()) {
             if (!empty($_POST) && isset($_POST['name'])) {
-                $department = new Department();
-                $department = $department->insert([
-                    'name' => $_POST['name'],
-                    'short_name' => $_POST['short_name']
-                ]);
+                $validator = new Validator();
 
-                if ($department > 0) Router::redirect('/departments');
+                $validation = $validator->make($_POST, [
+                    'name'       => 'required|max:100|min:4',
+                    'short_name' => 'required|max:10|min:2'
+                ]);
+                $validation->validate();
+
+                if ($validation->fails()) {
+                    $errors = $validation->errors();
+
+                    foreach ($errors->firstOfAll() as $field => $message) {
+                        Flash::set($field, $message);
+                    }
+
+                    Router::redirect('/department/create');
+                }
+                else {
+                    $department = new Department();
+                    $department = $department->insert([
+                        'name' => $_POST['name'],
+                        'short_name' => $_POST['short_name']
+                    ]);
+                    Router::redirect('/departments');
+                }
             }
         }
         else Router::redirect('/signin');
@@ -90,13 +112,13 @@ class DepartmentController extends Controller
 
         $this->view->render($department['name'], [
             'department' => $department,
-            'worplaces'  => $workplaces
+            'workplaces' => $workplaces
         ]);
     }
 
     public function edit(int $id)
     {
-        if (User::isAdmin()) {
+        if (Auth::check()) {
             $department = new Department();
             $department = $department->find($id)->get();
 
@@ -108,20 +130,39 @@ class DepartmentController extends Controller
     }
 
     public function update(int $id) {
-        if (User::isAdmin()) {
-            $department = new Department();
-            $result = $department->update([
-                'name' => $_POST['name'],
-                'short_name' => $_POST['short_name']
-            ], [$id]);
+        if (Auth::check()) {
+            $validator = new Validator();
 
-            Router::redirect('/department/' . $id);
+            $validation = $validator->make($_POST, [
+                'name'       => 'required|max:100|min:4',
+                'short_name' => 'required|max:10|min:2'
+            ]);
+            $validation->validate();
+
+            if ($validation->fails()) {
+                $errors = $validation->errors();
+
+                foreach ($errors->firstOfAll() as $field => $message) {
+                    Flash::set($field, $message);
+                }
+
+                Router::redirect("/department/$id/edit");
+            }
+            else {
+                $department = new Department();
+                $result = $department->update([
+                    'name' => $_POST['name'],
+                    'short_name' => $_POST['short_name']
+                ], [$id]);
+
+                Router::redirect('/department/' . $id);
+            }
         }
         else Router::redirect('/signin');
     }
 
     public function delete(int $id) {
-        if (User::isAdmin()) {
+        if (Auth::check()) {
             $department = new Department();
             $result = $department->delete([$id]);
 

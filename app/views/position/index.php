@@ -1,4 +1,4 @@
-<?php if (\app\models\User::isAdmin()): ?>
+<?php if (\app\lib\Auth::check()): ?>
     <div class="btn-group mb-3" role="group" aria-label="Кнопки управления">
         <a href="/position/create" class="btn btn-primary">Добавить</a>
     </div>

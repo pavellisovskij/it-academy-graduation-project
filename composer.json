@@ -1,6 +1,6 @@
 {
     "require": {
         "vlucas/phpdotenv": "^5.2",
-        "siriusphp/validation": "^3.0"
+        "rakit/validation": "^1.4"
     }
 }

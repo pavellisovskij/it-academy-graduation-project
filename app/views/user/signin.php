@@ -7,16 +7,6 @@
         </div>
     <?php endif; ?>
 
-    <?php if (isset($errors) && $errors === false) : ?>
-        <?php foreach ($validator->getMessages() as $attribute => $messages) : ?>
-            <?php foreach ($messages as $message) : ?>
-                <div class="alert alert-danger" role="alert">
-                    <?= $message->getTemplate() ?>
-                </div>
-            <?php endforeach; ?>
-        <?php endforeach; ?>
-    <?php endif; ?>
-
     <label for="username" class="sr-only">Имя пользователя</label>
     <input type="text" id="username" name="username" class="form-control" placeholder="Имя пользователя" required autofocus min="4" max="16">
 

@@ -30,7 +30,7 @@
 
         <div class="row">
             <div class="col-md-2">
-                <button class="btn btn-primary btn-block" type="submit">Обновить</button>
+                <button class="btn btn-primary" type="submit">Обновить</button>
             </div>
         </div>
     </form>
