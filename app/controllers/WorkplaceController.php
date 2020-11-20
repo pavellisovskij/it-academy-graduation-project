@@ -22,8 +22,10 @@ class WorkplaceController extends Controller
         $workplacesPerPage  = 20;
         $pages              = (int) ceil($numberOfWorkplaces / $workplacesPerPage);
 
+        if ($page > $pages) Router::redirect('/workplaces');
+
         if ($page === 1) $offset = 0;
-        else $offset = $page * $workplacesPerPage;
+        else $offset = ($page - 1) * $workplacesPerPage;
 
         $workplaces = $workplace->query("
             SELECT 
@@ -50,7 +52,7 @@ class WorkplaceController extends Controller
             LIMIT $workplacesPerPage OFFSET $offset
         ", Workplace::FETCH_ALL_METHOD);
 
-        $paginator = new Paginator($pages, $page, 2, '../workplaces/page/');
+        $paginator = new Paginator($pages, $page, 2, '/workplaces/page/');
 
         $this->view->render('Штатное расписание', [
             'workplaces' => $workplaces,

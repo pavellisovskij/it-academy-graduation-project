@@ -19,15 +19,17 @@ class PositionController extends Controller
         $positionsPerPage  = 10;
         $pages             = (int) ceil($numberOfPositions / $positionsPerPage);
 
+        if ($page > $pages) Router::redirect('/positions');
+
         if ($page === 1) $offset = 0;
-        else $offset = $page * $positionsPerPage;
+        else $offset = ($page - 1) * $positionsPerPage;
 
         $positions = $position->all()
             ->orderBy([['name', 'ASC']])
             ->take($positionsPerPage, $offset)
             ->get();
 
-        $paginator = new Paginator($pages, $page, 2, '../positions/page/');
+        $paginator = new Paginator($pages, $page, 2, '/positions/page/');
 
         $this->view->render('Должности', [
             'positions' => $positions,

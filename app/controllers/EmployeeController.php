@@ -21,14 +21,16 @@ class EmployeeController extends Controller
         $employeePerPage   = 20;
         $pages             = (int) ceil($numberOfEmployees / $employeePerPage);
 
+        if ($page > $pages) Router::redirect('/employees');
+
         if ($page === 1) $offset = 0;
-        else $offset = $page * $employeePerPage;
+        else $offset = ($page - 1) * $employeePerPage;
 
         $employees = $employee->all()->take(
             $employeePerPage, $offset
         )->get();
 
-        $paginator = new Paginator($pages, $page, 2, '../employees/page/');
+        $paginator = new Paginator($pages, $page, 2, '/employees/page/');
 
         $this->view->render('Сотрудники', [
             'employees' => $employees,
@@ -66,9 +68,9 @@ class EmployeeController extends Controller
                 'surname'       => 'required|min:1|max:20',
                 'firstname'     => 'required|min:1|max:20',
                 'patronymic'    => 'required|min:1|max:20',
-                'birthday'      => 'required|date:d.m.Y',
-                'hired'         => 'required|date:d.m.Y',
-                'medical_exam'  => 'required|date:d.m.Y'
+                'birthday'      => 'required|date',
+                'hired'         => 'required|date',
+                'medical_exam'  => 'required|date'
             ]);
             $validation->validate();
 

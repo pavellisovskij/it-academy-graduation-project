@@ -103,7 +103,7 @@ class Model //implements ModelInterface
         $this->sql = "SELECT COUNT(*) FROM $this->table_name";
         $this->get_method = $this::FETCH_METHOD;
 
-        return $this->get();
+        return $this->get()['COUNT(*)'];
     }
 
     public function all()

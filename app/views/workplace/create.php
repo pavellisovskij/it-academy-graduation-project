@@ -25,7 +25,7 @@
         <?php endif; ?>
         <div class="form-group col-2">
             <label for="rate" class="form-label">Ставка</label>
-            <input type="number" name="rate" class="form-control" id="rate" required max="1.0" min="0.1" step="0.05" value="0.1">
+            <input type="number" name="rate" class="form-control" id="rate" required max="1.0" min="0.1" step="0.05" value="1">
         </div>
 
 

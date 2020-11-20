@@ -17,11 +17,13 @@ class DepartmentController extends Controller
     public function index(int $page = 1) {
         $department          = new Department();
         $numberOfDepartments = (int) $department->count();
-        $departmentPerPage   = 10;
+        $departmentPerPage   = 5;
         $pages               = (int) ceil($numberOfDepartments / $departmentPerPage);
 
+        if ($page > $pages) Router::redirect('/departments');
+
         if ($page === 1) $offset = 0;
-        else $offset = $page * $departmentPerPage;
+        else $offset = ($page - 1) * $departmentPerPage;
 
         $departments = $department->query("
             SELECT 
@@ -37,7 +39,7 @@ class DepartmentController extends Controller
             LIMIT $departmentPerPage OFFSET $offset
         ", Department::FETCH_ALL_METHOD);
 
-        $paginator = new Paginator($pages, $page, 2, '../departments/page/');
+        $paginator = new Paginator($pages, $page, 2, '/departments/page/');
 
         $this->view->render('Отделы', [
             'departments' => $departments,
